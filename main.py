@@ -54,17 +54,19 @@ def create_json_from_youtube(playlist_id):
 
 def load_playlist_from_json(filename):
     spotify_tracks = []
-    with open(filename) as json_file:
+    with open(filename, 'r', encoding='utf-8') as json_file:
         data = json.load(json_file)
 
     for track in data:
+        if 'notOnSpotify' in track and track["notOnSpotify"]:
+            continue
         song = find_song(track["title"], track["artist"])
         if song:
             uri = song.get("uri")
             if uri:
                 spotify_tracks.append(uri)
 
-    add_to_playlist("Youtube2", spotify_tracks)
+    add_to_playlist("Youtube", spotify_tracks)
 
 
 if __name__ == '__main__':

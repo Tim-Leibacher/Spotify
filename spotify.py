@@ -1,3 +1,5 @@
+import logging
+
 import spotipy
 from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
@@ -31,7 +33,7 @@ def find_song(title, artist):
         artist_name = track['artists'][0]['name']
         return results['tracks']['items'][0]
     else:
-        print(f"Track '{title}' by {artist} not found.")
+        logging.error(f"'{title}' by {artist} not found.")
         return None
 
 
@@ -59,13 +61,12 @@ def test():
 
 
 def add_to_playlist(playlist_name, tracks):
-    max_tracks = 50
+    max_tracks = 100
 
     user_id = sp.current_user()['id']
     playlist = sp.user_playlist_create(user=user_id, name=playlist_name, public=True)
     playlist_id = playlist['id']
 
-    sp.playlist_add_items(playlist_id, tracks)
     # Split the tracks into chunks of MAX_TRACKS
     for i in range(0, len(tracks), max_tracks):
         batch = tracks[i:i + max_tracks]
